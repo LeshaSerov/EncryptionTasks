@@ -1,6 +1,6 @@
 package alex.serov.task2;
 
-import alex.serov.Cipher;
+import alex.serov.CipherInf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -10,16 +10,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Реализация шифра ADFGVX на основе интерфейса Cipher.
- * Этот шифр использует матрицу 6x6 с символами A, D, F, G, V, X,
- * а также процессы шифрования и дешифрования с использованием этой матрицы и ключа.
+ * Реализация шифра ADFGVX на основе интерфейса Cipher. Этот шифр использует матрицу 6x6 с символами
+ * A, D, F, G, V, X, а также процессы шифрования и дешифрования с использованием этой матрицы и
+ * ключа.
  */
-public class AdfgvxCipher implements Cipher {
+public class AdfgvxCipher implements CipherInf {
 
   private static final int ROWS = 6;
   private static final int COLUMNS = 6;
   private final Character[][] cryptoMatrix;
   private static final Character[] matrixSymbols = new Character[]{'A', 'D', 'F', 'G', 'V', 'X'};
+  private final String key;
 
   /**
    * Конструктор, инициализирующий объект AdfgvxCipher с использованием строки шифра.
@@ -28,7 +29,7 @@ public class AdfgvxCipher implements Cipher {
    * @param cipherString строка, представляющая матрицу шифра.
    * @throws IllegalArgumentException если длина строки шифра не равна 36 (6x6).
    */
-  public AdfgvxCipher(String cipherString) {
+  public AdfgvxCipher(String cipherString, String key) {
     if (cipherString.length() != ROWS * COLUMNS) {
       throw new IllegalArgumentException("Длина строки шифра должна быть равна 36 (6x6).");
     }
@@ -38,6 +39,7 @@ public class AdfgvxCipher implements Cipher {
       this.cryptoMatrix[count / (ROWS)][count % (COLUMNS)] = c;
       count++;
     }
+    this.key = key;
   }
 
   /**
@@ -90,7 +92,7 @@ public class AdfgvxCipher implements Cipher {
   }
 
   @Override
-  public String encrypt(String message, String key) {
+  public String encrypt(String message) {
     StringBuilder encryptedMessage = message.toUpperCase().chars()
         .mapToObj(c -> encryptSymbol((char) c))
         .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append);
@@ -122,7 +124,7 @@ public class AdfgvxCipher implements Cipher {
   }
 
   @Override
-  public String decrypt(String message, String key) {
+  public String decrypt(String message) {
     int numRows = (int) Math.round((double) message.length() / key.length());
     char[][] matrix = new char[key.length()][numRows];
     int index = 0;
@@ -166,11 +168,11 @@ public class AdfgvxCipher implements Cipher {
   }
 
   public static void main(String[] args) {
-    AdfgvxCipher adfgvxCipher = new AdfgvxCipher("D6EAM10IN3CBTYSWZ92LQOKVFG8HJPVX45R7");
     String startMessage = "Hi! I am Alex:)";
     String key = "key";
-    System.out.println("Encrypted message: " + adfgvxCipher.encrypt(startMessage, key));
+    AdfgvxCipher adfgvxCipher = new AdfgvxCipher("D6EAM10IN3CBTYSWZ92LQOKVFG8HJPVX45R7", key);
+    System.out.println("Encrypted message: " + adfgvxCipher.encrypt(startMessage));
     System.out.println(
-        "Decrypted message: " + adfgvxCipher.decrypt(adfgvxCipher.encrypt(startMessage, key), key));
+        "Decrypted message: " + adfgvxCipher.decrypt(adfgvxCipher.encrypt(startMessage)));
   }
 }

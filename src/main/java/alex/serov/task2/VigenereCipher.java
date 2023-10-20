@@ -1,22 +1,28 @@
 package alex.serov.task2;
 
-import alex.serov.Cipher;
+import alex.serov.CipherInf;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Реализация шифра Виженера на основе интерфейса Cipher.
- * Шифр Виженера использует ключевое слово и процедуры шифрования и дешифрования для обработки сообщений.
+ * Реализация шифра Виженера на основе интерфейса Cipher. Шифр Виженера использует ключевое слово и
+ * процедуры шифрования и дешифрования для обработки сообщений.
  */
-public class VigenereCipher implements Cipher {
+public class VigenereCipher implements CipherInf {
+
+  private final String key;
+
+  VigenereCipher(String key) {
+    this.key = key;
+  }
 
   /**
    * Метод для шифрования или дешифрования сообщения с использованием ключа и заданного знака.
    *
    * @param message исходное сообщение для обработки.
-   * @param key ключ для шифрования или дешифрования.
-   * @param sign знак, определяющий направление обработки (шифрование или дешифрование).
+   * @param key     ключ для шифрования или дешифрования.
+   * @param sign    знак, определяющий направление обработки (шифрование или дешифрование).
    * @return зашифрованное или дешифрованное сообщение.
    */
   public static String crypt(String message, String key, int sign) {
@@ -40,12 +46,12 @@ public class VigenereCipher implements Cipher {
   }
 
   @Override
-  public String encrypt(String message, String key) {
+  public String encrypt(String message) {
     return crypt(message, key, 1);
   }
 
   @Override
-  public String decrypt(String message, String key) {
+  public String decrypt(String message) {
     return crypt(message, key, -1);
   }
 
@@ -58,11 +64,10 @@ public class VigenereCipher implements Cipher {
     System.out.print("Key(rus): ");
     String key = scanner.nextLine().replaceAll(" ", "");
 
-    VigenereCipher vigenereCipher = new VigenereCipher();
+    VigenereCipher vigenereCipher = new VigenereCipher(key);
 
-    System.out.println("Encrypted message: " + vigenereCipher.encrypt(startMessage, key));
+    System.out.println("Encrypted message: " + vigenereCipher.encrypt(startMessage));
     System.out.println(
-        "Decrypted message: " + vigenereCipher.decrypt(vigenereCipher.encrypt(startMessage, key),
-            key));
+        "Decrypted message: " + vigenereCipher.decrypt(vigenereCipher.encrypt(startMessage)));
   }
 }
